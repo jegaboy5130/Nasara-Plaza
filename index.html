@@ -37,7 +37,7 @@
       font-size: 12px;
       cursor: pointer;
     }
-    .input-group {
+    .controls-group {
       display: flex;
       gap: 8px;
       margin-bottom: 20px;
@@ -51,6 +51,15 @@
       color: #fff;
       font-size: 16px;
     }
+    select {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: var(--card);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+    }
     .btn-add {
       padding: 12px 20px;
       border-radius: 8px;
@@ -63,7 +72,7 @@
     }
     .teams-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(var(--team-cols, 3), 1fr);
       gap: 8px;
       margin-bottom: 24px;
     }
@@ -73,8 +82,10 @@
       padding: 10px;
       border-top: 4px solid var(--accent);
     }
-    .team-card.b { border-top-color: #3b82f6; }
-    .team-card.c { border-top-color: #f59e0b; }
+    .team-card.team-A { border-top-color: #10b981; }
+    .team-card.team-B { border-top-color: #3b82f6; }
+    .team-card.team-C { border-top-color: #f59e0b; }
+    .team-card.team-D { border-top-color: #ec4899; }
     .team-card h3 { margin: 0 0 10px 0; font-size: 13px; text-transform: uppercase; text-align: center; }
     .player-slot {
       padding: 6px 0;
@@ -84,6 +95,23 @@
       justify-content: space-between;
     }
     .player-slot span { color: var(--subtext); font-size: 10px; }
+    
+    /* 6-Player Divider Styling */
+    .team-divider {
+      margin: 8px 0;
+      padding: 4px 0;
+      border-top: 2px dashed #f59e0b;
+      border-bottom: 2px dashed #f59e0b;
+      text-align: center;
+      font-size: 9px;
+      font-weight: bold;
+      color: #f59e0b;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: rgba(245, 158, 11, 0.08);
+      border-radius: 4px;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -114,32 +142,24 @@
 <body>
 
   <div class="header-row">
-    <h2>Soccer Match Manager</h2>
+    <h2>Nasara Plaza Match Manager</h2>
     <button class="btn-reset" onclick="resetSession()">Reset All</button>
   </div>
 
-  <!-- Entry Form -->
-  <div class="input-group">
+  <!-- Entry & Controls Form -->
+  <div class="controls-group">
     <input type="text" id="playerName" placeholder="Enter player name..." autocomplete="off">
+    <select id="teamCountSelect" onchange="changeTeamCount()">
+      <option value="2">2 Teams</option>
+      <option value="3" selected>3 Teams</option>
+      <option value="4">4 Teams</option>
+    </select>
     <button class="btn-add" id="submitBtn" onclick="addOrUpdatePlayer()">Add</button>
   </div>
 
   <!-- Teams Output -->
   <h3 style="font-size: 14px; color: var(--subtext);">TEAMS</h3>
-  <div class="teams-grid">
-    <div class="team-card a">
-      <h3>Team A</h3>
-      <div id="teamA"></div>
-    </div>
-    <div class="team-card b">
-      <h3>Team B</h3>
-      <div id="teamB"></div>
-    </div>
-    <div class="team-card c">
-      <h3>Team C</h3>
-      <div id="teamC"></div>
-    </div>
-  </div>
+  <div class="teams-grid" id="teamsGrid"></div>
 
   <!-- Arrival Log -->
   <h3 style="font-size: 14px; color: var(--subtext);">ARRIVAL LIST</h3>
@@ -157,7 +177,23 @@
 
   <script>
     let players = JSON.parse(localStorage.getItem('soccer_players') || '[]');
+    let numTeams = parseInt(localStorage.getItem('soccer_num_teams') || '3');
     let editPlayerId = null;
+
+    document.getElementById('teamCountSelect').value = numTeams;
+
+    function getTeamKeys(count = numTeams) {
+      const keys = ['A', 'B', 'C', 'D'];
+      return keys.slice(0, count);
+    }
+
+    function changeTeamCount() {
+      numTeams = parseInt(document.getElementById('teamCountSelect').value);
+      localStorage.setItem('soccer_num_teams', numTeams);
+      
+      assignTeamsToUnassigned();
+      saveAndRender();
+    }
 
     function addOrUpdatePlayer() {
       const input = document.getElementById('playerName');
@@ -177,13 +213,12 @@
           id: players.length + 1,
           name: name,
           time: timeStr,
-          team: null,
-          batchSeed: Math.random() // Seed to lock batch order
+          teamsMap: {} // Stores fixed assignments: { '2': 'A', '3': 'C', '4': 'B' }
         };
         players.push(newPlayer);
       }
 
-      recalculateTeams();
+      assignTeamsToUnassigned();
       saveAndRender();
       input.value = '';
     }
@@ -203,48 +238,52 @@
       
       players = players.filter(p => p.id !== id);
 
-      // Re-index player IDs
+      // Re-index IDs while keeping assignments intact
       players.forEach((p, idx) => {
         p.id = idx + 1;
-        p.team = null;
       });
 
-      recalculateTeams();
       saveAndRender();
     }
 
     function resetSession() {
-      if (confirm("Reset the entire session list? This cannot be undone.")) {
+      if (confirm("Reset the entire session list and all team assignments? This cannot be undone.")) {
         players = [];
         localStorage.removeItem('soccer_players');
         saveAndRender();
       }
     }
 
-    // Handles full batches of 3 AND partial groups (1 or 2 extra players)
-    function recalculateTeams() {
-      players.forEach(p => p.team = null);
+    // Ensures each player has a permanent assigned team for 2-team, 3-team, and 4-team modes
+    function assignTeamsToUnassigned() {
+      [2, 3, 4].forEach(modeCount => {
+        const activeTeams = getTeamKeys(modeCount);
+        const unassigned = players.filter(p => !p.teamsMap || !p.teamsMap[modeCount]);
 
-      for (let i = 0; i < players.length; i += 3) {
-        const batch = players.slice(i, i + 3);
-        const sortedBatch = [...batch].sort((a, b) => a.batchSeed - b.batchSeed);
+        if (unassigned.length === 0) return;
 
-        if (batch.length === 3) {
-          // Full batch of 3: assign randomly across A, B, C
-          sortedBatch[0].team = 'A';
-          sortedBatch[1].team = 'B';
-          sortedBatch[2].team = 'C';
-        } else if (batch.length === 1) {
-          // 1 leftover player: pick a random team
-          const available = ['A', 'B', 'C'].sort((a, b) => sortedBatch[0].batchSeed - 0.5);
-          sortedBatch[0].team = available[0];
-        } else if (batch.length === 2) {
-          // 2 leftover players: pick 2 distinct random teams
-          const available = ['A', 'B', 'C'].sort((a, b) => sortedBatch[0].batchSeed - 0.5);
-          sortedBatch[0].team = available[0];
-          sortedBatch[1].team = available[1];
-        }
-      }
+        // Count current distribution for this mode
+        const teamCounts = {};
+        activeTeams.forEach(t => teamCounts[t] = 0);
+        players.forEach(p => {
+          if (p.teamsMap && p.teamsMap[modeCount]) {
+            teamCounts[p.teamsMap[modeCount]]++;
+          }
+        });
+
+        // Assign unassigned players deterministically to balance teams without re-shuffling existing members
+        unassigned.forEach(player => {
+          if (!player.teamsMap) player.teamsMap = {};
+
+          let minCount = Math.min(...Object.values(teamCounts));
+          let candidateTeams = activeTeams.filter(t => teamCounts[t] === minCount);
+
+          // Pick randomly among tied smallest teams
+          let chosenTeam = candidateTeams[Math.floor(Math.random() * candidateTeams.length)];
+          player.teamsMap[modeCount] = chosenTeam;
+          teamCounts[chosenTeam]++;
+        });
+      });
     }
 
     function saveAndRender() {
@@ -266,20 +305,48 @@
         </tr>
       `).join('');
 
-      // Render Teams
-      ['A', 'B', 'C'].forEach(team => {
-        const container = document.getElementById(`team${team}`);
-        const teamPlayers = players.filter(p => p.team === team);
-        container.innerHTML = teamPlayers.map(p => `
-          <div class="player-slot">
-            <span>${p.name}</span>
-            <span>#${p.id}</span>
+      // Dynamic Grid Layout based on current team selection
+      const activeTeams = getTeamKeys();
+      const teamsGrid = document.getElementById('teamsGrid');
+      teamsGrid.style.setProperty('--team-cols', numTeams);
+
+      let gridHtml = '';
+      activeTeams.forEach(team => {
+        gridHtml += `
+          <div class="team-card team-${team}">
+            <h3>Team ${team}</h3>
+            <div id="team${team}"></div>
           </div>
-        `).join('');
+        `;
+      });
+      teamsGrid.innerHTML = gridHtml;
+
+      // Render Teams using cached team mode map
+      activeTeams.forEach(team => {
+        const container = document.getElementById(`team${team}`);
+        const teamPlayers = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === team);
+        
+        let html = '';
+        teamPlayers.forEach((p, idx) => {
+          html += `
+            <div class="player-slot">
+              <span>${p.name}</span>
+              <span>#${p.id}</span>
+            </div>
+          `;
+          
+          // Divider after 6 players
+          if ((idx + 1) % 6 === 0 && idx < teamPlayers.length - 1) {
+            html += `<div class="team-divider"> Team Limit (6 Players) </div>`;
+          }
+        });
+
+        container.innerHTML = html;
       });
     }
 
-    // Initial render
+    // Initial check and render
+    assignTeamsToUnassigned();
     saveAndRender();
   </script>
 </body>
