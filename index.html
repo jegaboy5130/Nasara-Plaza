@@ -37,10 +37,23 @@
       font-size: 12px;
       cursor: pointer;
     }
-    .controls-group {
+    .team-select-container {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .team-select-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--subtext);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-group {
       display: flex;
       gap: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     input[type="text"] {
       flex: 1;
@@ -52,6 +65,7 @@
       font-size: 16px;
     }
     select {
+      width: 100%;
       padding: 12px;
       border-radius: 8px;
       border: 1px solid #333;
@@ -142,18 +156,23 @@
 <body>
 
   <div class="header-row">
-    <h2>Nasara Plaza Match Manager</h2>
+    <h2>Nasara Plaza Team Manager</h2>
     <button class="btn-reset" onclick="resetSession()">Reset All</button>
   </div>
 
-  <!-- Entry & Controls Form -->
-  <div class="controls-group">
-    <input type="text" id="playerName" placeholder="Enter player name..." autocomplete="off">
+  <!-- Team Selector Row -->
+  <div class="team-select-container">
+    <label for="teamCountSelect" class="team-select-label">Select Number of Teams</label>
     <select id="teamCountSelect" onchange="changeTeamCount()">
       <option value="2">2 Teams</option>
       <option value="3" selected>3 Teams</option>
       <option value="4">4 Teams</option>
     </select>
+  </div>
+
+  <!-- Name Input Row -->
+  <div class="input-group">
+    <input type="text" id="playerName" placeholder="Enter player name..." autocomplete="off">
     <button class="btn-add" id="submitBtn" onclick="addOrUpdatePlayer()">Add</button>
   </div>
 
