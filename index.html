@@ -12,7 +12,14 @@
       --danger: #ef4444;
       --text: #ffffff;
       --subtext: #a0a0a0;
+
+      /* Standardized Team Brand Colors */
+      --team-a-color: #10b981;
+      --team-b-color: #3b82f6;
+      --team-c-color: #f59e0b;
+      --team-d-color: #ec4899;
     }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background-color: var(--bg);
@@ -21,13 +28,30 @@
       padding: 16px;
       padding-bottom: 40px;
     }
+
     .header-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
     }
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
     h2 { margin: 0; color: var(--accent); font-size: 20px; }
+    .date-display {
+      font-size: 12px;
+      color: var(--subtext);
+      margin-top: 2px;
+    }
     .btn-reset {
       background: transparent;
       border: 1px solid var(--danger);
@@ -54,9 +78,9 @@
       display: flex;
       gap: 8px;
       margin-bottom: 24px;
+      flex-wrap: wrap;
     }
-    input[type="text"] {
-      flex: 1;
+    input[type="text"], input[type="number"] {
       padding: 12px;
       border-radius: 8px;
       border: 1px solid #333;
@@ -64,8 +88,8 @@
       color: #fff;
       font-size: 16px;
     }
+    input[type="text"] { flex: 2; min-width: 150px; }
     select {
-      width: 100%;
       padding: 12px;
       border-radius: 8px;
       border: 1px solid #333;
@@ -73,6 +97,10 @@
       color: #fff;
       font-size: 14px;
       cursor: pointer;
+    }
+    .tier-select, .pos-select {
+      flex: 1;
+      min-width: 110px;
     }
     .btn-add {
       padding: 12px 20px;
@@ -90,27 +118,91 @@
       gap: 8px;
       margin-bottom: 24px;
     }
+    
+    /* Team Card Variations */
     .team-card {
       background: var(--card);
       border-radius: 8px;
       padding: 10px;
-      border-top: 4px solid var(--accent);
+      border-top: 4px solid var(--subtext);
     }
-    .team-card.team-A { border-top-color: #10b981; }
-    .team-card.team-B { border-top-color: #3b82f6; }
-    .team-card.team-C { border-top-color: #f59e0b; }
-    .team-card.team-D { border-top-color: #ec4899; }
-    .team-card h3 { margin: 0 0 10px 0; font-size: 13px; text-transform: uppercase; text-align: center; }
+    .team-card.team-A { border-top-color: var(--team-a-color); }
+    .team-card.team-B { border-top-color: var(--team-b-color); }
+    .team-card.team-C { border-top-color: var(--team-c-color); }
+    .team-card.team-D { border-top-color: var(--team-d-color); }
+    
+    .team-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .team-header h3 { 
+      margin: 0; 
+      font-size: 13px; 
+      text-transform: uppercase; 
+      text-align: center; 
+    }
+
+    /* Consistent Team Badges for Stats Tables & Cards */
+    .team-score-badge {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid #333;
+      color: #e5e7eb;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 12px;
+      letter-spacing: 0.3px;
+      display: inline-block;
+    }
+    .team-badge-A { color: var(--team-a-color); border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.1); }
+    .team-badge-B { color: var(--team-b-color); border-color: rgba(59, 130, 246, 0.4); background: rgba(59, 130, 246, 0.1); }
+    .team-badge-C { color: var(--team-c-color); border-color: rgba(245, 158, 11, 0.4); background: rgba(245, 158, 11, 0.1); }
+    .team-badge-D { color: var(--team-d-color); border-color: rgba(236, 72, 153, 0.4); background: rgba(236, 72, 153, 0.1); }
+
     .player-slot {
-      padding: 6px 0;
+      padding: 6px 4px;
       border-bottom: 1px solid #2a2a2a;
       font-size: 13px;
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+      transition: background 0.2s ease;
     }
-    .player-slot span { color: var(--subtext); font-size: 10px; }
+    .player-slot.selected-for-swap {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid var(--accent);
+    }
+    .player-slot-left {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow: hidden;
+    }
+    .player-slot-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .player-slot span.meta { color: var(--subtext); font-size: 10px; }
+
+    .btn-swap {
+      background: transparent;
+      border: none;
+      color: var(--subtext);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .btn-swap:hover {
+      color: var(--accent);
+      background: rgba(255, 255, 255, 0.05);
+    }
     
-    /* 6-Player Divider Styling */
     .team-divider {
       margin: 8px 0;
       padding: 4px 0;
@@ -132,6 +224,7 @@
       background: var(--card);
       border-radius: 8px;
       overflow: hidden;
+      margin-bottom: 24px;
     }
     th, td {
       padding: 10px 8px;
@@ -151,28 +244,97 @@
       cursor: pointer;
       padding: 2px 4px;
     }
+
+    .score-entry-card {
+      background: var(--card);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 24px;
+      border: 1px solid #333;
+    }
+    .score-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .score-controls select, .score-controls input {
+      padding: 8px;
+      font-size: 14px;
+    }
+    .score-controls input[type="number"] {
+      width: 50px;
+      text-align: center;
+    }
+    .scorers-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid #2a2a2a;
+    }
+    .scorer-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .scorer-group label {
+      font-size: 11px;
+      color: var(--subtext);
+      font-weight: 600;
+    }
+    .btn-record {
+      padding: 8px 16px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
   <div class="header-row">
-    <h2>Nasara Plaza Team Manager</h2>
+    <div class="brand-container">
+      <img src="img/logo.png" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
+      <div>
+        <h2>Soccer Match Manager</h2>
+        <div id="dateDisplay" class="date-display"></div>
+      </div>
+    </div>
     <button class="btn-reset" onclick="resetSession()">Reset All</button>
   </div>
 
   <!-- Team Selector Row -->
   <div class="team-select-container">
     <label for="teamCountSelect" class="team-select-label">Select Number of Teams</label>
-    <select id="teamCountSelect" onchange="changeTeamCount()">
+    <select id="teamCountSelect" style="width: 100%;" onchange="changeTeamCount()">
       <option value="2">2 Teams</option>
       <option value="3" selected>3 Teams</option>
       <option value="4">4 Teams</option>
     </select>
   </div>
 
-  <!-- Name Input Row -->
+  <!-- Name, Position & Skill Entry Row -->
   <div class="input-group">
     <input type="text" id="playerName" placeholder="Enter player name..." autocomplete="off">
+    <select id="playerPosition" class="pos-select">
+      <option value="DEF">Defender</option>
+      <option value="MID" selected>Midfielder</option>
+      <option value="FWD">Forward</option>
+    </select>
+    <select id="playerTier" class="tier-select">
+      <option value="4">Pro</option>
+      <option value="3" selected>Good</option>
+      <option value="2">Average</option>
+      <option value="1">Beginner</option>
+    </select>
     <button class="btn-add" id="submitBtn" onclick="addOrUpdatePlayer()">Add</button>
   </div>
 
@@ -180,13 +342,77 @@
   <h3 style="font-size: 14px; color: var(--subtext);">TEAMS</h3>
   <div class="teams-grid" id="teamsGrid"></div>
 
+  <!-- Record Match Score & Player Distribution -->
+  <h3 style="font-size: 14px; color: var(--subtext);">RECORD MATCH & SCORERS</h3>
+  <div class="score-entry-card">
+    <div class="score-controls">
+      <select id="homeTeamSelect" onchange="updateScorerInputs()"></select>
+      <input type="number" id="homeScore" min="0" value="0" onchange="updateScorerInputs()">
+      <span>vs</span>
+      <input type="number" id="awayScore" min="0" value="0" onchange="updateScorerInputs()">
+      <select id="awayTeamSelect" onchange="updateScorerInputs()"></select>
+    </div>
+
+    <div class="scorers-section">
+      <div class="scorer-group">
+        <label id="homeScorerLabel">Home Goalscorers</label>
+        <div id="homeScorersContainer"></div>
+      </div>
+      <div class="scorer-group">
+        <label id="awayScorerLabel">Away Goalscorers</label>
+        <div id="awayScorersContainer"></div>
+      </div>
+    </div>
+    <button class="btn-record" onclick="recordMatch()">Record Result</button>
+  </div>
+
+  <!-- Individual Player Stats Table -->
+  <h3 style="font-size: 14px; color: var(--subtext);">PLAYER PERFORMANCE LOG</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Pos</th>
+        <th>Team</th>
+        <th>MP</th>
+        <th>Goals</th>
+        <th>W</th>
+        <th>D</th>
+        <th>L</th>
+        <th>Win %</th>
+      </tr>
+    </thead>
+    <tbody id="playerStatsTable"></tbody>
+  </table>
+
+  <!-- Standings Table -->
+  <h3 style="font-size: 14px; color: var(--subtext);">TEAM STANDINGS</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>P</th>
+        <th>W</th>
+        <th>D</th>
+        <th>L</th>
+        <th>GF</th>
+        <th>GA</th>
+        <th>GD</th>
+        <th><strong>Pts</strong></th>
+      </tr>
+    </thead>
+    <tbody id="standingsTable"></tbody>
+  </table>
+
   <!-- Arrival Log -->
   <h3 style="font-size: 14px; color: var(--subtext);">ARRIVAL LIST</h3>
   <table>
     <thead>
       <tr>
-        <th>#</th>
+        <th>SN</th>
         <th>Name</th>
+        <th>Pos</th>
+        <th>Tier</th>
         <th>Time</th>
         <th style="text-align: right;">Action</th>
       </tr>
@@ -195,11 +421,33 @@
   </table>
 
   <script>
+    const TIER_BADGES = {
+      4: '🌟 T1',
+      3: '✨ T2',
+      2: '⚡ T3',
+      1: '🟢 T4'
+    };
+
+    const POSITION_BADGES = {
+      'DEF': '🛡️ DEF',
+      'MID': '⚙️ MID',
+      'FWD': '⚡ FWD'
+    };
+
     let players = JSON.parse(localStorage.getItem('soccer_players') || '[]');
+    let matches = JSON.parse(localStorage.getItem('soccer_matches') || '[]');
     let numTeams = parseInt(localStorage.getItem('soccer_num_teams') || '3');
     let editPlayerId = null;
+    let selectedForSwapId = null;
 
     document.getElementById('teamCountSelect').value = numTeams;
+
+    function renderDate() {
+      const now = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('dateDisplay').innerText = now.toLocaleDateString(undefined, options);
+    }
+    renderDate();
 
     function getTeamKeys(count = numTeams) {
       const keys = ['A', 'B', 'C', 'D'];
@@ -209,6 +457,7 @@
     function changeTeamCount() {
       numTeams = parseInt(document.getElementById('teamCountSelect').value);
       localStorage.setItem('soccer_num_teams', numTeams);
+      selectedForSwapId = null;
       
       assignTeamsToUnassigned();
       saveAndRender();
@@ -216,12 +465,21 @@
 
     function addOrUpdatePlayer() {
       const input = document.getElementById('playerName');
+      const tierSelect = document.getElementById('playerTier');
+      const posSelect = document.getElementById('playerPosition');
       const name = input.value.trim();
+      const tier = parseInt(tierSelect.value);
+      const position = posSelect.value;
+
       if (!name) return;
 
       if (editPlayerId !== null) {
         const player = players.find(p => p.id === editPlayerId);
-        if (player) player.name = name;
+        if (player) {
+          player.name = name;
+          player.tier = tier;
+          player.position = position;
+        }
         editPlayerId = null;
         document.getElementById('submitBtn').innerText = 'Add';
       } else {
@@ -231,8 +489,10 @@
         const newPlayer = {
           id: players.length + 1,
           name: name,
+          tier: tier,
+          position: position,
           time: timeStr,
-          teamsMap: {} // Stores fixed assignments: { '2': 'A', '3': 'C', '4': 'B' }
+          teamsMap: {}
         };
         players.push(newPlayer);
       }
@@ -247,6 +507,8 @@
       if (!player) return;
 
       document.getElementById('playerName').value = player.name;
+      document.getElementById('playerTier').value = player.tier || 3;
+      document.getElementById('playerPosition').value = player.position || 'MID';
       document.getElementById('playerName').focus();
       document.getElementById('submitBtn').innerText = 'Save';
       editPlayerId = id;
@@ -256,8 +518,8 @@
       if (!confirm("Are you sure you want to remove this player?")) return;
       
       players = players.filter(p => p.id !== id);
+      if (selectedForSwapId === id) selectedForSwapId = null;
 
-      // Re-index IDs while keeping assignments intact
       players.forEach((p, idx) => {
         p.id = idx + 1;
       });
@@ -266,14 +528,106 @@
     }
 
     function resetSession() {
-      if (confirm("Reset the entire session list and all team assignments? This cannot be undone.")) {
+      if (confirm("Reset the entire session list, matches, and team assignments? This cannot be undone.")) {
         players = [];
+        matches = [];
+        selectedForSwapId = null;
         localStorage.removeItem('soccer_players');
+        localStorage.removeItem('soccer_matches');
         saveAndRender();
       }
     }
 
-    // Ensures each player has a permanent assigned team for 2-team, 3-team, and 4-team modes
+    function handlePlayerSwap(id) {
+      if (selectedForSwapId === null) {
+        selectedForSwapId = id;
+      } else if (selectedForSwapId === id) {
+        selectedForSwapId = null;
+      } else {
+        const player1 = players.find(p => p.id === selectedForSwapId);
+        const player2 = players.find(p => p.id === id);
+
+        if (player1 && player2 && player1.teamsMap && player2.teamsMap) {
+          const tempTeam = player1.teamsMap[numTeams];
+          player1.teamsMap[numTeams] = player2.teamsMap[numTeams];
+          player2.teamsMap[numTeams] = tempTeam;
+        }
+
+        selectedForSwapId = null;
+      }
+      saveAndRender();
+    }
+
+    function updateScorerInputs() {
+      const homeTeam = document.getElementById('homeTeamSelect').value;
+      const awayTeam = document.getElementById('awayTeamSelect').value;
+      const homeScore = parseInt(document.getElementById('homeScore').value) || 0;
+      const awayScore = parseInt(document.getElementById('awayScore').value) || 0;
+
+      const homePlayers = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === homeTeam);
+      const awayPlayers = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === awayTeam);
+
+      document.getElementById('homeScorerLabel').innerText = `Team ${homeTeam} Goalscorers (${homeScore})`;
+      document.getElementById('awayScorerLabel').innerText = `Team ${awayTeam} Goalscorers (${awayScore})`;
+
+      const generateSelects = (count, teamPlayers, containerId) => {
+        const container = document.getElementById(containerId);
+        let html = '';
+        for (let i = 0; i < count; i++) {
+          html += `
+            <select class="${containerId}-select" style="margin-bottom: 4px;">
+              <option value="">Select Scorer...</option>
+              ${teamPlayers.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}
+            </select>
+          `;
+        }
+        container.innerHTML = html;
+      };
+
+      generateSelects(homeScore, homePlayers, 'homeScorersContainer');
+      generateSelects(awayScore, awayPlayers, 'awayScorersContainer');
+    }
+
+    function recordMatch() {
+      const homeTeam = document.getElementById('homeTeamSelect').value;
+      const awayTeam = document.getElementById('awayTeamSelect').value;
+      const homeScore = parseInt(document.getElementById('homeScore').value) || 0;
+      const awayScore = parseInt(document.getElementById('awayScore').value) || 0;
+
+      if (homeTeam === awayTeam) {
+        alert("Please select two different teams.");
+        return;
+      }
+
+      const homeScorerSelects = document.querySelectorAll('.homeScorersContainer-select');
+      const awayScorerSelects = document.querySelectorAll('.awayScorersContainer-select');
+      
+      const homeScorers = Array.from(homeScorerSelects).map(s => parseInt(s.value)).filter(val => !isNaN(val));
+      const awayScorers = Array.from(awayScorerSelects).map(s => parseInt(s.value)).filter(val => !isNaN(val));
+
+      const homeRoster = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === homeTeam).map(p => p.id);
+      const awayRoster = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === awayTeam).map(p => p.id);
+
+      matches.push({
+        numTeams: numTeams,
+        homeTeam,
+        awayTeam,
+        homeScore,
+        awayScore,
+        homeScorers,
+        awayScorers,
+        homeRoster,
+        awayRoster
+      });
+
+      localStorage.setItem('soccer_matches', JSON.stringify(matches));
+
+      document.getElementById('homeScore').value = 0;
+      document.getElementById('awayScore').value = 0;
+      
+      saveAndRender();
+    }
+
     function assignTeamsToUnassigned() {
       [2, 3, 4].forEach(modeCount => {
         const activeTeams = getTeamKeys(modeCount);
@@ -281,26 +635,44 @@
 
         if (unassigned.length === 0) return;
 
-        // Count current distribution for this mode
-        const teamCounts = {};
-        activeTeams.forEach(t => teamCounts[t] = 0);
+        const teamStats = {};
+        activeTeams.forEach(t => {
+          teamStats[t] = { score: 0, count: 0, positions: { DEF: 0, MID: 0, FWD: 0 } };
+        });
+
         players.forEach(p => {
           if (p.teamsMap && p.teamsMap[modeCount]) {
-            teamCounts[p.teamsMap[modeCount]]++;
+            const teamKey = p.teamsMap[modeCount];
+            const pos = p.position || 'MID';
+            teamStats[teamKey].score += (p.tier || 3);
+            teamStats[teamKey].count += 1;
+            teamStats[teamKey].positions[pos] = (teamStats[teamKey].positions[pos] || 0) + 1;
           }
         });
 
-        // Assign unassigned players deterministically to balance teams without re-shuffling existing members
         unassigned.forEach(player => {
           if (!player.teamsMap) player.teamsMap = {};
+          const pos = player.position || 'MID';
 
-          let minCount = Math.min(...Object.values(teamCounts));
-          let candidateTeams = activeTeams.filter(t => teamCounts[t] === minCount);
+          let minPosCount = Math.min(...activeTeams.map(t => teamStats[t].positions[pos] || 0));
+          let candidateTeams = activeTeams.filter(t => (teamStats[t].positions[pos] || 0) === minPosCount);
 
-          // Pick randomly among tied smallest teams
+          if (candidateTeams.length > 1) {
+            let minScore = Math.min(...candidateTeams.map(t => teamStats[t].score));
+            candidateTeams = candidateTeams.filter(t => teamStats[t].score === minScore);
+          }
+
+          if (candidateTeams.length > 1) {
+            let minCount = Math.min(...candidateTeams.map(t => teamStats[t].count));
+            candidateTeams = candidateTeams.filter(t => teamStats[t].count === minCount);
+          }
+
           let chosenTeam = candidateTeams[Math.floor(Math.random() * candidateTeams.length)];
           player.teamsMap[modeCount] = chosenTeam;
-          teamCounts[chosenTeam]++;
+
+          teamStats[chosenTeam].score += (player.tier || 3);
+          teamStats[chosenTeam].count += 1;
+          teamStats[chosenTeam].positions[pos] = (teamStats[chosenTeam].positions[pos] || 0) + 1;
         });
       });
     }
@@ -308,12 +680,32 @@
     function saveAndRender() {
       localStorage.setItem('soccer_players', JSON.stringify(players));
 
-      // Render Arrival List
+      const activeTeams = getTeamKeys();
+      const homeSelect = document.getElementById('homeTeamSelect');
+      const awaySelect = document.getElementById('awayTeamSelect');
+      
+      const prevHome = homeSelect.value;
+      const prevAway = awaySelect.value;
+
+      const optionsHtml = activeTeams.map(t => `<option value="${t}">Team ${t}</option>`).join('');
+      homeSelect.innerHTML = optionsHtml;
+      awaySelect.innerHTML = optionsHtml;
+
+      if (activeTeams.includes(prevHome)) homeSelect.value = prevHome;
+      if (activeTeams.includes(prevAway)) awaySelect.value = prevAway;
+      if (homeSelect.value === awaySelect.value && activeTeams.length > 1) {
+        awaySelect.selectedIndex = (homeSelect.selectedIndex + 1) % activeTeams.length;
+      }
+
+      updateScorerInputs();
+
       const tbody = document.getElementById('arrivalTable');
       tbody.innerHTML = players.map(p => `
         <tr>
           <td>${p.id}</td>
           <td><strong>${p.name}</strong></td>
+          <td><span style="font-size: 11px;">${POSITION_BADGES[p.position || 'MID']}</span></td>
+          <td><span style="font-size: 11px;">${TIER_BADGES[p.tier || 3]}</span></td>
           <td>${p.time}</td>
           <td style="text-align: right;">
             <div class="action-btns" style="justify-content: flex-end;">
@@ -324,37 +716,45 @@
         </tr>
       `).join('');
 
-      // Dynamic Grid Layout based on current team selection
-      const activeTeams = getTeamKeys();
       const teamsGrid = document.getElementById('teamsGrid');
       teamsGrid.style.setProperty('--team-cols', numTeams);
 
       let gridHtml = '';
       activeTeams.forEach(team => {
+        const teamPlayers = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === team);
+        const totalScore = teamPlayers.reduce((sum, p) => sum + (p.tier || 3), 0);
+
         gridHtml += `
           <div class="team-card team-${team}">
-            <h3>Team ${team}</h3>
+            <div class="team-header">
+              <h3>Team ${team}</h3>
+              <span class="team-score-badge team-badge-${team}">⭐ ${totalScore} pts</span>
+            </div>
             <div id="team${team}"></div>
           </div>
         `;
       });
       teamsGrid.innerHTML = gridHtml;
 
-      // Render Teams using cached team mode map
       activeTeams.forEach(team => {
         const container = document.getElementById(`team${team}`);
         const teamPlayers = players.filter(p => p.teamsMap && p.teamsMap[numTeams] === team);
         
         let html = '';
         teamPlayers.forEach((p, idx) => {
+          const isSelected = p.id === selectedForSwapId;
           html += `
-            <div class="player-slot">
-              <span>${p.name}</span>
-              <span>#${p.id}</span>
+            <div class="player-slot ${isSelected ? 'selected-for-swap' : ''}">
+              <div class="player-slot-left">
+                <span>${p.name} <small style="font-size: 9px; opacity: 0.8;">${POSITION_BADGES[p.position || 'MID']}</small></span>
+              </div>
+              <div class="player-slot-right">
+                <span class="meta">#${p.id}</span>
+                <button class="btn-swap" title="Swap team position" onclick="handlePlayerSwap(${p.id})">🔄</button>
+              </div>
             </div>
           `;
           
-          // Divider after 6 players
           if ((idx + 1) % 6 === 0 && idx < teamPlayers.length - 1) {
             html += `<div class="team-divider"> Team Limit (6 Players) </div>`;
           }
@@ -362,9 +762,132 @@
 
         container.innerHTML = html;
       });
+
+      const playerStats = {};
+      players.forEach(p => {
+        playerStats[p.id] = {
+          name: p.name,
+          position: p.position || 'MID',
+          team: p.teamsMap ? p.teamsMap[numTeams] : '-',
+          played: 0,
+          goals: 0,
+          wins: 0,
+          draws: 0,
+          losses: 0
+        };
+      });
+
+      matches.filter(m => m.numTeams === numTeams).forEach(m => {
+        (m.homeScorers || []).forEach(scorerId => {
+          if (playerStats[scorerId]) playerStats[scorerId].goals++;
+        });
+        (m.awayScorers || []).forEach(scorerId => {
+          if (playerStats[scorerId]) playerStats[scorerId].goals++;
+        });
+
+        const homeWon = m.homeScore > m.awayScore;
+        const awayWon = m.awayScore > m.homeScore;
+        const isDraw = m.homeScore === m.awayScore;
+
+        (m.homeRoster || []).forEach(pId => {
+          if (!playerStats[pId]) return;
+          playerStats[pId].played++;
+          if (homeWon) playerStats[pId].wins++;
+          else if (isDraw) playerStats[pId].draws++;
+          else playerStats[pId].losses++;
+        });
+
+        (m.awayRoster || []).forEach(pId => {
+          if (!playerStats[pId]) return;
+          playerStats[pId].played++;
+          if (awayWon) playerStats[pId].wins++;
+          else if (isDraw) playerStats[pId].draws++;
+          else playerStats[pId].losses++;
+        });
+      });
+
+      const sortedPlayerStats = Object.values(playerStats).sort((a, b) => {
+        if (b.goals !== a.goals) return b.goals - a.goals;
+        return b.wins - a.wins;
+      });
+
+      const playerStatsTbody = document.getElementById('playerStatsTable');
+      playerStatsTbody.innerHTML = sortedPlayerStats.map(p => {
+        const winPct = p.played > 0 ? Math.round((p.wins / p.played) * 100) : 0;
+        const badgeClass = p.team !== '-' ? `team-badge-${p.team}` : '';
+        return `
+          <tr>
+            <td><strong>${p.name}</strong></td>
+            <td><small style="font-size: 10px;">${POSITION_BADGES[p.position]}</small></td>
+            <td><span class="team-score-badge ${badgeClass}">${p.team}</span></td>
+            <td>${p.played}</td>
+            <td><strong>${p.goals}</strong></td>
+            <td>${p.wins}</td>
+            <td>${p.draws}</td>
+            <td>${p.losses}</td>
+            <td>${winPct}%</td>
+          </tr>
+        `;
+      }).join('');
+
+      const standings = {};
+      activeTeams.forEach(t => {
+        standings[t] = { played: 0, win: 0, draw: 0, loss: 0, gf: 0, ga: 0, gd: 0, pts: 0 };
+      });
+
+      matches.filter(m => m.numTeams === numTeams).forEach(m => {
+        if (!standings[m.homeTeam] || !standings[m.awayTeam]) return;
+
+        standings[m.homeTeam].played++;
+        standings[m.awayTeam].played++;
+
+        standings[m.homeTeam].gf += m.homeScore;
+        standings[m.homeTeam].ga += m.awayScore;
+        standings[m.awayTeam].gf += m.awayScore;
+        standings[m.awayTeam].ga += m.homeScore;
+
+        if (m.homeScore > m.awayScore) {
+          standings[m.homeTeam].win++;
+          standings[m.homeTeam].pts += 3;
+          standings[m.awayTeam].loss++;
+        } else if (m.homeScore < m.awayScore) {
+          standings[m.awayTeam].win++;
+          standings[m.awayTeam].pts += 3;
+          standings[m.homeTeam].loss++;
+        } else {
+          standings[m.homeTeam].draw++;
+          standings[m.homeTeam].pts += 1;
+          standings[m.awayTeam].draw++;
+          standings[m.awayTeam].pts += 1;
+        }
+      });
+
+      activeTeams.forEach(t => {
+        standings[t].gd = standings[t].gf - standings[t].ga;
+      });
+
+      const sortedTeams = activeTeams.sort((a, b) => {
+        if (standings[b].pts !== standings[a].pts) return standings[b].pts - standings[a].pts;
+        if (standings[b].gd !== standings[a].gd) return standings[b].gd - standings[a].gd;
+        return standings[b].gf - standings[a].gf;
+      });
+
+      const standingsTbody = document.getElementById('standingsTable');
+      standingsTbody.innerHTML = sortedTeams.map(t => `
+        <tr>
+          <td><span class="team-score-badge team-badge-${t}">Team ${t}</span></td>
+          <td>${standings[t].played}</td>
+          <td>${standings[t].win}</td>
+          <td>${standings[t].draw}</td>
+          <td>${standings[t].loss}</td>
+          <td>${standings[t].gf}</td>
+          <td>${standings[t].ga}</td>
+          <td>${standings[t].gd > 0 ? '+' + standings[t].gd : standings[t].gd}</td>
+          <td><strong>${standings[t].pts}</strong></td>
+        </tr>
+      `).join('');
     }
 
-    // Initial check and render
     assignTeamsToUnassigned();
     saveAndRender();
   </script>
